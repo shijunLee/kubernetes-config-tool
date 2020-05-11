@@ -43,10 +43,7 @@ func init() {
 }
 
 func usage() {
-	fmt.Fprintf(os.Stderr, `nginx version: nginx/1.10.0
-Usage: nginx [-hvVtTq] [-s signal] [-c filename] [-p prefix] [-g directives]
-
-Options:
+	fmt.Fprintf(os.Stderr, `Options:
 `)
 	flag.PrintDefaults()
 }

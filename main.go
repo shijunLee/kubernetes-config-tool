@@ -161,7 +161,9 @@ func main() {
 	}
 	for key, value := range mergeConfig.AuthInfos {
 		mergeKey := fmt.Sprintf("%s-%s", key, clusterName)
-		value.Username = fmt.Sprintf("%s-%s", value.Username, clusterName)
+		if value.Username!=""{
+			value.Username = fmt.Sprintf("%s-%s", value.Username, clusterName)
+		}
 		config.AuthInfos[mergeKey] = value
 	}
 	data, err := clientcmd.Write(*config)

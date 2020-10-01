@@ -16,4 +16,4 @@ vendor/
 kubernete-config-merge-tool
 .idea/
 config
-kubernete-config-tool
+kubernetes-config-tool

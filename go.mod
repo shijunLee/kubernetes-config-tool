@@ -4,6 +4,9 @@ go 1.14
 
 require (
 	github.com/imdario/mergo v0.3.9 // indirect
+	github.com/mitchellh/go-homedir v1.1.0
+	github.com/spf13/cobra v1.0.0
+	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.5.1 // indirect
 	golang.org/x/crypto v0.0.0-20200510223506-06a226fb4e37 // indirect
 	golang.org/x/net v0.0.0-20200506145744-7e3656a0809f // indirect
@@ -14,5 +17,3 @@ require (
 	k8s.io/client-go v0.18.2
 	k8s.io/utils v0.0.0-20200414100711-2df71ebbae66 // indirect
 )
-
-

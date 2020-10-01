@@ -44,7 +44,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.Flags().StringVar(&sourceFile, "s", "", "the source config file will merged default is user dir ~/.kube/config")
+	rootCmd.PersistentFlags().StringVarP(&sourceFile, "sourcefile", "s", "", "the source config file will merged default is user dir ~/.kube/config")
 	initDefaultKuberConfig()
 }
 

@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "git.jd.com/tpaas/kubernete-config-merge-tool/cmd"
+import "github.com/shijunLee/kubernetes-config-tool/cmd"
 
 func main() {
 	cmd.Execute()

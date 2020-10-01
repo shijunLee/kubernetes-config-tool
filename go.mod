@@ -1,4 +1,4 @@
-module git.jd.com/tpaas/kubernete-config-merge-tool
+module github.com/shijunLee/kubernetes-config-tool
 
 go 1.14
 

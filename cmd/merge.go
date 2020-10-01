@@ -20,7 +20,7 @@ import (
 	"os"
 	"path"
 
-	"git.jd.com/tpaas/kubernete-config-merge-tool/pkg/utils"
+	"github.com/shijunLee/kubernetes-config-tool/pkg/utils"
 	"github.com/spf13/cobra"
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
@@ -44,7 +44,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("merge called")
+		runMergeCommand()
 	},
 }
 
@@ -60,10 +60,9 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// mergeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	mergeCmd.Flags().BoolVar(&help, "h", false, "this help")
-	mergeCmd.Flags().StringVar(&inputFile, "i", "", "the kubernetes config file will merge file path ")
-	mergeCmd.Flags().StringVar(&outputFile, "o", "./config", "the merged kubernetes config file output path")
-	mergeCmd.Flags().StringVar(&clusterName, "n", "", "the merge config cluster name")
+	mergeCmd.Flags().StringVarP(&inputFile, "input", "i", "", "the kubernetes config file will merge file path ")
+	mergeCmd.Flags().StringVarP(&outputFile, "output", "o", "./config", "the merged kubernetes config file output path")
+	mergeCmd.Flags().StringVarP(&clusterName, "clustername", "n", "", "the merge config cluster name")
 }
 
 func runMergeCommand() {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"reflect"
+	"sort"
 
 	"github.com/olekukonko/tablewriter"
 )
@@ -27,12 +28,11 @@ func PrintObjectTable(obj interface{}, writer io.Writer) {
 		}
 		if len(sliceMap) > 0 {
 			var value []string
-			for k, v := range sliceMap[0] {
+			for k := range sliceMap[0] {
 				header = append(header, k)
-				value = append(value, fmt.Sprintf("%v", v))
 			}
+			sort.Strings(header)
 			rows = append(rows, value)
-			sliceMap = sliceMap[1:]
 			for _, item := range sliceMap {
 				value = []string{}
 				for _, headerKey := range header {

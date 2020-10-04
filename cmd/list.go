@@ -57,8 +57,8 @@ func init() {
 }
 
 type contextResult struct {
-	Name        string
-	IsCurrent   string
+	ContextName string
+	Current     string
 	Server      string
 	Namespace   string
 	ClusterName string
@@ -77,10 +77,10 @@ func listCurrentKubernetesContext() {
 			isCurrent = "√"
 		}
 		contexts = append(contexts, contextResult{
-			Name:        name,
+			ContextName: name,
 			Namespace:   context.Namespace,
 			ClusterName: context.Cluster,
-			IsCurrent:   isCurrent,
+			Current:     isCurrent,
 		})
 	}
 	var result []contextResult

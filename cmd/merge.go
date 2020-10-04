@@ -35,8 +35,9 @@ var (
 
 // mergeCmd represents the merge command
 var mergeCmd = &cobra.Command{
-	Use:   "merge",
-	Short: "merge a kubernetes config file to another",
+	Use:     "merge",
+	Aliases: []string{"m"},
+	Short:   "merge a kubernetes config file to another",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 

@@ -17,14 +17,20 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"sort"
+
+	"github.com/shijunLee/kubernetes-config-tool/pkg/utils"
 
 	"github.com/spf13/cobra"
+	"k8s.io/client-go/tools/clientcmd"
 )
 
 // listCmd represents the list command
 var listCmd = &cobra.Command{
-	Use:   "list",
-	Short: "A brief description of your command",
+	Use:     "list",
+	Aliases: []string{"l"},
+	Short:   "A brief description of your command",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
@@ -32,7 +38,7 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
+		listCurrentKubernetesContext()
 	},
 }
 
@@ -48,4 +54,46 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+type contextResult struct {
+	Name        string
+	IsCurrent   string
+	Server      string
+	Namespace   string
+	ClusterName string
+}
+
+func listCurrentKubernetesContext() {
+	config, err := clientcmd.LoadFromFile(defaultPath)
+	if err != nil {
+		fmt.Println("load the default kubernetes config file error", err)
+		return
+	}
+	var contexts []contextResult
+	for name, context := range config.Contexts {
+		isCurrent := ""
+		if name == config.CurrentContext {
+			isCurrent = "√"
+		}
+		contexts = append(contexts, contextResult{
+			Name:        name,
+			Namespace:   context.Namespace,
+			ClusterName: context.Cluster,
+			IsCurrent:   isCurrent,
+		})
+	}
+	var result []contextResult
+	for _, item := range contexts {
+		for name, server := range config.Clusters {
+			if item.ClusterName == name {
+				item.Server = server.Server
+			}
+		}
+		result = append(result, item)
+	}
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].ClusterName > result[j].ClusterName
+	})
+	utils.PrintObjectTable(result, os.Stdout)
 }

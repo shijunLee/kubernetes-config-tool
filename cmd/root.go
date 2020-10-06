@@ -32,6 +32,9 @@ var rootCmd = &cobra.Command{
 	Use:   "kubernetes-config-tool",
 	Short: "a tool for manager kubernetes config file",
 	Long:  `this is command app for manager kubernetes config files.`,
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		initDefaultKubernetesConfig()
+	},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -45,10 +48,10 @@ func Execute() {
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&sourceFile, "sourcefile", "s", "", "the source config file will merged default is user dir ~/.kube/config")
-	initDefaultKuberConfig()
+
 }
 
-func initDefaultKuberConfig() {
+func initDefaultKubernetesConfig() {
 	if sourceFile == "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
@@ -60,8 +63,14 @@ func initDefaultKuberConfig() {
 		}
 		defaultPath = path.Join(homeDir, ".kube", "config")
 	} else {
+		sourceFile, err := filepath.Abs(sourceFile)
+		if err != nil {
+			fmt.Println("the source file path error")
+			return
+		}
 		defaultPath = sourceFile
-		_, err := os.Stat(sourceFile)
+
+		_, err = os.Stat(sourceFile)
 		if err != nil {
 			if os.IsNotExist(err) {
 				fmt.Println("the config source file not exist")

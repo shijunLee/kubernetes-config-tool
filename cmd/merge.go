@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/shijunLee/kubernetes-config-tool/pkg/utils"
 	"github.com/spf13/cobra"
@@ -30,7 +31,6 @@ var (
 	inputFile   string
 	outputFile  string
 	clusterName string
-	help        bool
 )
 
 // mergeCmd represents the merge command
@@ -67,8 +67,12 @@ func init() {
 }
 
 func runMergeCommand() {
-
-	_, err := os.Stat(inputFile)
+	inputFile, err := filepath.Abs(inputFile)
+	if err != nil {
+		fmt.Println("the input path error")
+		return
+	}
+	_, err = os.Stat(inputFile)
 	if err != nil {
 		if os.IsNotExist(err) {
 			fmt.Println("the merge config source file not exist")
@@ -93,6 +97,11 @@ func runMergeCommand() {
 		fmt.Println("load the default kubernetes config file is empty")
 		return
 	}
+	outputFile, err = filepath.Abs(outputFile)
+	if err != nil {
+		fmt.Println("the output path error")
+		return
+	}
 	fileInfo, err := os.Stat(outputFile)
 	var f *os.File
 	if err != nil {
@@ -110,7 +119,7 @@ func runMergeCommand() {
 			return
 		}
 	}
-	if fileInfo.IsDir() {
+	if fileInfo != nil && fileInfo.IsDir() {
 		outputFile = path.Join(outputFile, "config")
 		_, err = os.Stat(outputFile)
 		if os.IsNotExist(err) {

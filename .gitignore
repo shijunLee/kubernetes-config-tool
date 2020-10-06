@@ -17,3 +17,5 @@ kubernete-config-merge-tool
 .idea/
 config
 kubernetes-config-tool
+test.config
+use.config

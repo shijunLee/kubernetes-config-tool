@@ -130,7 +130,7 @@ func deleteCluster() {
 		newConfig.CurrentContext = config.CurrentContext
 	}
 
-	err = clientcmd.WriteToFile(*config, defaultPath)
+	err = clientcmd.WriteToFile(*newConfig, defaultPath)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("write file to %s error", defaultPath), err)
 		return

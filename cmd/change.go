@@ -22,21 +22,26 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-var contextName = ""
-
 // changeCmd represents the change command
 var changeCmd = &cobra.Command{
-	Use:     "change",
-	Aliases: []string{"c"},
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Use:     "set-current",
+	Aliases: []string{"c", "change"},
+	Short:   "a commend to change current context",
+	Long: `a commend to change current context. For example:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+kubeconfig set-current test
+
+or
+
+kubeconfig c test
+
+you can use 'kubeconfig list' to see the context list.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		changeCurrentContext()
+		if len(args) == 0 {
+			cmd.Help()
+			return
+		}
+		changeCurrentContext(args[0])
 	},
 }
 
@@ -52,10 +57,10 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// changeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	changeCmd.Flags().StringVarP(&contextName, "context-name", "c", "", "the context will set to current use context")
+
 }
 
-func changeCurrentContext() {
+func changeCurrentContext(contextName string) {
 	config, err := clientcmd.LoadFromFile(defaultPath)
 	if err != nil {
 		fmt.Println("load the default kubernetes config file error", err)

@@ -135,6 +135,5 @@ func deleteCluster() {
 		fmt.Println(fmt.Sprintf("write file to %s error", defaultPath), err)
 		return
 	}
-	fmt.Println(fmt.Sprintf("change current context to %s success", contextName))
 
 }

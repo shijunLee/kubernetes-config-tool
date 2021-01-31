@@ -1,78 +1,90 @@
 package utils
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
+	"os"
 	"reflect"
-	"sort"
 
 	"github.com/olekukonko/tablewriter"
 )
 
-// PrintObjectTable print an object array to writer
-func PrintObjectTable(obj interface{}, writer io.Writer) {
+//PrintInterfacesToConsole print a slice object to console std out
+func PrintInterfacesToConsole(objs interface{}) {
+	table := BuildPrintTabel(objs)
+	table.Render()
+}
+
+//BuildPrintTabel build print tables for objects
+func BuildPrintTabel(objs interface{}) *tablewriter.Table {
+	printData, printHeader := interfacesToTableString(objs)
+	table := tablewriter.NewWriter(os.Stdout)
+
+	table.SetAutoWrapText(false)
+	table.SetAutoFormatHeaders(true)
+	if len(printHeader) > 0 {
+		table.SetHeader(printHeader)
+		table.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
+		table.SetHeaderLine(false)
+	}
+	table.SetAlignment(tablewriter.ALIGN_LEFT)
+	table.SetCenterSeparator("")
+	table.SetColumnSeparator("")
+	table.SetRowSeparator("")
+	table.SetBorder(false)
+	table.SetTablePadding("\t") // pad with tabs
+	table.SetNoWhiteSpace(true)
+	table.AppendBulk(printData) // Add Bulk Data
+	return table
+}
+
+func interfacesToTableString(objs interface{}) ([][]string, []string) {
+	var result [][]string
 	var header []string
-	var rows [][]string
-	data, err := json.Marshal(obj)
-	if err != nil {
-		writer.Write([]byte(err.Error()))
-		return
-	}
-	if reflect.TypeOf(obj).Kind() == reflect.Slice {
-		var sliceMap = []map[string]interface{}{}
-		err = json.Unmarshal(data, &sliceMap)
-		if err != nil {
-			writer.Write([]byte(err.Error()))
-			return
-		}
-		if len(sliceMap) > 0 {
-			var value []string
-			for k := range sliceMap[0] {
-				header = append(header, k)
-			}
-			sort.Strings(header)
-			rows = append(rows, value)
-			for _, item := range sliceMap {
-				value = []string{}
-				for _, headerKey := range header {
-					v := item[headerKey]
-					value = append(value, fmt.Sprintf("%v", v))
+	items := reflect.ValueOf(objs)
+	if reflect.ValueOf(objs).Kind() == reflect.Slice {
+		for i := 0; i < items.Len(); i++ {
+			item := items.Index(i)
+			if item.Kind() == reflect.Struct {
+				v := reflect.Indirect(item)
+				var fieldValues []string
+				for j := 0; j < v.NumField(); j++ {
+					var value = v.Field(j).Interface()
+					if reflect.TypeOf(value).Kind() == reflect.Ptr {
+						value = v.Field(j).Elem().Interface()
+					}
+					fieldValues = append(fieldValues, fmt.Sprintf("%v", value))
+					if i == 0 {
+						header = append(header, v.Type().Field(j).Name)
+					}
 				}
-				rows = append(rows, value)
+				result = append(result, fieldValues)
 			}
 		}
-	} else {
-		objMap := map[string]interface{}{}
-		err = json.Unmarshal(data, &objMap)
-		if err != nil {
-			writer.Write([]byte(err.Error()))
-			return
-		}
-
-		var value []string
-
-		for k, v := range objMap {
-			header = append(header, k)
-			value = append(value, fmt.Sprintf("%v", v))
-		}
-		rows = append(rows, value)
+		return result, header
+	} else if reflect.ValueOf(objs).Kind() == reflect.Struct {
+		result = getStructTableString(objs)
+		return result, header
+	} else if reflect.ValueOf(objs).Kind() == reflect.Ptr && reflect.ValueOf(objs).Elem().Kind() == reflect.Struct {
+		objs = reflect.ValueOf(objs).Elem().Interface()
+		result = getStructTableString(objs)
+		return result, header
 	}
+	return [][]string{}, []string{}
+}
 
-	outWrite := tablewriter.NewWriter(writer)
-	outWrite.SetHeader(header)
-	outWrite.AppendBulk(rows)
-	outWrite.SetRowLine(true)
-	outWrite.SetAutoWrapText(false)
-	outWrite.SetAutoFormatHeaders(true)
-	outWrite.SetHeaderAlignment(tablewriter.ALIGN_LEFT)
-	outWrite.SetAlignment(tablewriter.ALIGN_LEFT)
-	outWrite.SetCenterSeparator("")
-	outWrite.SetColumnSeparator("")
-	outWrite.SetRowSeparator("")
-	outWrite.SetHeaderLine(false)
-	outWrite.SetBorder(false)
-	outWrite.SetTablePadding("\t") // pad with tabs
-	outWrite.SetNoWhiteSpace(true)
-	outWrite.Render()
+func getStructTableString(structObj interface{}) [][]string {
+	var result [][]string
+
+	v := reflect.Indirect(reflect.ValueOf(structObj))
+	for j := 0; j < v.NumField(); j++ {
+		var fieldValues []string
+		fieldValues = append(fieldValues, fmt.Sprintf("%s:", v.Type().Field(j).Name))
+		var value = v.Field(j).Interface()
+		if reflect.TypeOf(value).Kind() == reflect.Ptr {
+			value = v.Field(j).Elem().Interface()
+		}
+		fieldValues = append(fieldValues, fmt.Sprintf("%v", value))
+		result = append(result, fieldValues)
+	}
+	return result
 }

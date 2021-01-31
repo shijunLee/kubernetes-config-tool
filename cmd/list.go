@@ -17,13 +17,12 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"sort"
-
-	"github.com/shijunLee/kubernetes-config-tool/pkg/utils"
 
 	"github.com/spf13/cobra"
 	"k8s.io/client-go/tools/clientcmd"
+
+	"github.com/shijunLee/kubernetes-config-tool/pkg/utils"
 )
 
 // listCmd represents the list command
@@ -95,5 +94,5 @@ func listCurrentKubernetesContext() {
 	sort.Slice(result, func(i, j int) bool {
 		return result[i].ClusterName > result[j].ClusterName
 	})
-	utils.PrintObjectTable(result, os.Stdout)
+	utils.PrintInterfacesToConsole(result)
 }

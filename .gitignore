@@ -19,3 +19,4 @@ config
 kubernetes-config-tool
 test.config
 use.config
+kubeconfig

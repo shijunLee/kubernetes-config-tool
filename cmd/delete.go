@@ -29,13 +29,12 @@ var deleteClusterName = ""
 var deleteCmd = &cobra.Command{
 	Use:     "delete",
 	Aliases: []string{"d"},
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short:   "delete a cluster from kubeconfig file",
+	Long: `delete a cluster from kubernetes config file:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+kct delete --cluster-name=test [--sourcefile=~/.kube/config]
+or
+kct d -n test [-s ~/.kube/config]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		deleteCluster()
 	},
@@ -53,7 +52,7 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// deleteCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	deleteCmd.Flags().StringVarP(&deleteClusterName, "cluster-name", "", "", "the cluster name which you want to delete")
+	deleteCmd.Flags().StringVarP(&deleteClusterName, "cluster-name", "n", "", "the cluster name which you want to delete")
 }
 
 func deleteCluster() {

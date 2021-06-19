@@ -38,12 +38,11 @@ var mergeCmd = &cobra.Command{
 	Use:     "merge",
 	Aliases: []string{"m"},
 	Short:   "merge a kubernetes config file to another",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Long: `merge kubernete config file to the source kubernetes kubernetes config file :
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+kct merge --input=./test.config --output=./config --cluster-name=test [--sourcefile=~/.kube/config]
+or
+kct m -i ./test.config -o  ./config -n test [-s ~/.kube/config]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		runMergeCommand()
 	},
@@ -63,7 +62,7 @@ func init() {
 	// mergeCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	mergeCmd.Flags().StringVarP(&inputFile, "input", "i", "", "the kubernetes config file will merge file path ")
 	mergeCmd.Flags().StringVarP(&outputFile, "output", "o", "./config", "the merged kubernetes config file output path")
-	mergeCmd.Flags().StringVarP(&clusterName, "clustername", "n", "", "the merge config cluster name")
+	mergeCmd.Flags().StringVarP(&clusterName, "cluster-name", "n", "", "the merge config cluster name")
 }
 
 func runMergeCommand() {

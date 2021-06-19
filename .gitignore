@@ -19,3 +19,5 @@ config
 kubernetes-config-tool
 test.config
 use.config
+bin/
+kct

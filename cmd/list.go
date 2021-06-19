@@ -30,13 +30,12 @@ import (
 var listCmd = &cobra.Command{
 	Use:     "list",
 	Aliases: []string{"l"},
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short:   "list kubernete config clusters",
+	Long: `list kubernete config clusters:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+kct list  [--sourcefile=~/.kube/config]
+or 
+kct l [-s ~/.kube/config]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		listCurrentKubernetesContext()
 	},

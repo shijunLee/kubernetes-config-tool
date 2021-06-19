@@ -28,13 +28,12 @@ var contextName = ""
 var changeCmd = &cobra.Command{
 	Use:     "change",
 	Aliases: []string{"c"},
-	Short:   "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
+	Short:   "change the current-context for kubernetes config ",
+	Long: `change the kubernetes current-context:
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+kct change --context-name=test [--sourcefile=~/.kube/config]
+or
+kct c -c test [-s ~/.kube/config]`,
 	Run: func(cmd *cobra.Command, args []string) {
 		changeCurrentContext()
 	},
